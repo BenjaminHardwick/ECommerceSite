@@ -64,7 +64,7 @@ const Rating = ({ value, text, color }) => {
           }
         ></i>
       </span>
-      <span>{text && text} </span>
+      <span> {text && text} </span>
     </div>
   );
 };
@@ -80,4 +80,5 @@ Rating.propTypes = {
   text: PropTypes.string.isRequired,
   color: PropTypes.string,
 };
+
 export default Rating;
