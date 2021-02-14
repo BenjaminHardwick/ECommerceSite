@@ -10,6 +10,9 @@ import {
   ORDER_PAYMENT_FAIL,
   ORDER_PAYMENT_SUCCESS,
   ORDER_PAYMENT_REQUEST,
+  ORDER_HISTORY_REQUEST,
+  ORDER_HISTORY_SUCCESS,
+  ORDER_HISTORY_FAIL,
 } from '../constants/orderConstants';
 import { logout } from './userActions';
 
@@ -133,6 +136,44 @@ export const makePayment = (orderId, paymentResult) => async (
     console.log('request payment failed');
     dispatch({
       type: ORDER_PAYMENT_FAIL,
+      payload: message,
+    });
+  }
+};
+
+// Uses token to get any information therefore nothing passed in
+export const userOrderHistory = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: ORDER_HISTORY_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/orders/order-history`, config);
+
+    dispatch({
+      type: ORDER_HISTORY_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === 'Not authorized, token failed') {
+      dispatch(logout());
+    }
+    dispatch({
+      type: ORDER_HISTORY_FAIL,
       payload: message,
     });
   }

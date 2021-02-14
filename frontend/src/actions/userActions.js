@@ -12,7 +12,9 @@ import {
   USER_INFO_REQUEST,
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_SUCCESS,
+  USER_INFO_RESET,
 } from '../constants/userConstants';
+import { ORDER_HISTORY_RESET } from '../constants/orderConstants';
 import axios from 'axios';
 
 export const login = (email, password) => async dispatch => {
@@ -55,6 +57,8 @@ export const logout = () => dispatch => {
   dispatch({
     type: USER_LOGOUT,
   });
+  dispatch({ type: ORDER_HISTORY_RESET });
+  dispatch({ type: USER_INFO_RESET });
 };
 
 export const register = (name, email, password) => async dispatch => {
