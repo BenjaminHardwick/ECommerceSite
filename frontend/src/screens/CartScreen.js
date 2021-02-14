@@ -10,7 +10,6 @@ import {
   Form,
   Button,
   Card,
-  Accordion,
 } from 'react-bootstrap';
 import { addToCart, removeFromCart } from '../actions/cartActions';
 
@@ -30,7 +29,7 @@ const CartScreen = ({ match, location, history }) => {
     dispatch(removeFromCart(id));
   };
   const checkoutHandler = () => {
-    history.push('/login?redirect=shipping');
+    history.push('/login?redirect=delivery');
     console.log('checkout');
   };
   const cart = useSelector(state => state.cart);
