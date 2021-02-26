@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Button,
-  Col,
-  Row,
-  ListGroup,
-  Image,
-  Card,
-  Form,
-} from 'react-bootstrap';
+import { Col, Row, ListGroup, Image, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { getOrderInformation, makePayment } from '../actions/orderActions';
+import {
+  getOrderInformation,
+  makePayment,
+  makeDelivery,
+} from '../actions/orderActions';
 import axios from 'axios';
 import { PayPalButton } from 'react-paypal-button-v2';
-import { ORDER_PAYMENT_RESET } from '../constants/orderConstants';
+import {
+  ORDER_PAYMENT_RESET,
+  ORDER_DELIVERY_STATUS_RESET,
+} from '../constants/orderConstants';
 
 const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id;
@@ -24,6 +23,9 @@ const OrderScreen = ({ match, history }) => {
 
   const dispatch = useDispatch();
 
+  const userLogin = useSelector(state => state.userLogin);
+  const { userInfo } = userLogin;
+
   const orderInformation = useSelector(state => state.orderInformation);
 
   const { order, loading, error } = orderInformation;
@@ -31,6 +33,10 @@ const OrderScreen = ({ match, history }) => {
   const orderPayment = useSelector(state => state.orderPayment);
   // rename loading/success -> paymentLoading/paymentSucess
   const { success: paymentSuccess, loading: paymentLoading } = orderPayment;
+
+  const orderDelivery = useSelector(state => state.orderDelivery);
+  // rename loading/success -> paymentLoading/paymentSucess
+  const { success: deliverySuccess, loading: deliveryLoading } = orderDelivery;
 
   if (!loading) {
     const add = num => {
@@ -48,26 +54,31 @@ const OrderScreen = ({ match, history }) => {
     order.deliveryFee = 15;
     order.finalPrice = order.finalPrice + order.deliveryFee;
 
-    console.log(order.deliveryFee);
+    //console.log(order.deliveryFee);
   }
 
   /// https://medium.com/@bolajifemi28/how-to-add-paypal-checkout-to-your-react-app-37d44c58a896
 
   useEffect(() => {
-    const insertPayPal = async () => {
-      const { data: clientID } = await axios.get('/api/config/paypal')
-      const script = document.createElement('script')
-      script.type = 'text/javascript'
-      script.src = `https://www.paypal.com/sdk/js?client-id=${clientID}`
-      script.async = true
-      script.onload = () => {
-        setSdkReady(true)
-      }
-      document.body.appendChild(script)
+    if (!userInfo) {
+      history.push('/login');
     }
+    const insertPayPal = async () => {
+      const { data: clientID } = await axios.get('/api/config/paypal');
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = `https://www.paypal.com/sdk/js?client-id=${clientID}`;
+      script.async = true;
+      script.onload = () => {
+        setSdkReady(true);
+      };
+      document.body.appendChild(script);
+    };
 
-    if (!order || order._id !== orderId || paymentSuccess) {
+    if (!order || deliverySuccess || paymentSuccess) {
       dispatch({ type: ORDER_PAYMENT_RESET });
+      dispatch({ type: ORDER_DELIVERY_STATUS_RESET });
+
       dispatch(getOrderInformation(orderId));
     } else if (!order.isPaid) {
       if (!window.paypal) {
@@ -76,13 +87,25 @@ const OrderScreen = ({ match, history }) => {
         setSdkReady(true);
       }
     }
-  }, [dispatch, order, paymentSuccess, orderId]);
+  }, [
+    dispatch,
+    order,
+    paymentSuccess,
+    deliverySuccess,
+    userInfo,
+    history,
+    orderId,
+  ]);
+
+  const deliveryHandler = () => {
+    dispatch(makeDelivery(order));
+  };
 
   const paymentHandler = paymentResult => {
-    console.log(paymentResult);
+    //console.log(paymentResult);
     // Updates database /api/order/:id -> isPaid? to true
     dispatch(makePayment(orderId, paymentResult));
-    console.log('made payment');
+    // console.log('made payment');
   };
 
   // On activation of placeOrderHandler, it will call OrderActions with order in the state passing all the information in createOrder
@@ -159,7 +182,7 @@ const OrderScreen = ({ match, history }) => {
                           </Link>
                         </Col>
                         <Col md={4}>
-                          {product.quantity} x ${product.price} = $
+                          {product.quantity} x £{product.price} = £
                           {product.quantity * product.price}
                         </Col>
                       </Row>
@@ -226,6 +249,20 @@ const OrderScreen = ({ match, history }) => {
                 )}
               </ListGroup.Item>
             )}
+            {userInfo &&
+              userInfo.isAdmin &&
+              order.isPaid &&
+              !order.isDelivered && (
+                <ListGroup.Item>
+                  <Button
+                    type="button"
+                    className="btn btn-block"
+                    onClick={deliveryHandler}
+                  >
+                    Complete Delivery
+                  </Button>
+                </ListGroup.Item>
+              )}
           </ListGroup>
         </Col>
       </Row>

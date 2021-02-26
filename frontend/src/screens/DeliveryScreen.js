@@ -20,7 +20,7 @@ const DeliveryScreen = ({ history }) => {
 
   const submitHandler = e => {
     e.preventDefault();
-    console.log('submit');
+    //console.log('submit');
     dispatch(deliveryAddressHandler({ address, city, postCode, country }));
     history.push('/payment');
   };

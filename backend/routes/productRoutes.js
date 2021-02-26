@@ -1,9 +1,17 @@
 import express from 'express';
-import Product from '../models/productModel.js';
+//import Product from '../models/productModel.js';
 import {
+  createNewProduct,
+  deleteProduct,
+  getBestProducts,
+  getProductBrands,
+  getProductCategories,
   getProducts,
   getProductsById,
+  newReview,
+  updateProduct,
 } from '../controllers/productControllers.js';
+import { protect, isAdministrator } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 // instead of using try for all, we can use an express async handler.
@@ -12,12 +20,24 @@ const router = express.Router();
 // @route GET /api/products
 // @access Public
 
-router.route('/').get(getProducts);
+router
+  .route('/')
+  .get(getProducts)
+  .post(protect, isAdministrator, createNewProduct);
+
+router.get('/brands', getProductBrands);
+router.get('/categories', getProductCategories);
+router.route('/:id/reviews').post(protect, newReview);
+router.get('/best', getBestProducts);
 
 // @desc Fetch specific product
 // @route GET /api/products/:id
 // @access Public
 
-router.route('/:id').get(getProductsById);
+router
+  .route('/:id')
+  .get(getProductsById)
+  .delete(protect, isAdministrator, deleteProduct)
+  .put(protect, isAdministrator, updateProduct);
 
 export default router;

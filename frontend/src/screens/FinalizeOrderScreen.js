@@ -5,8 +5,7 @@ import {
   Row,
   ListGroup,
   Image,
-  Card,
-  Form,
+
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -42,7 +41,7 @@ const FinalizeOrderScreen = ({ history }) => {
 
   useEffect(() => {
     if (success) {
-      console.log('Success');
+      //console.log('Success');
       history.push(`/order/${order._id}`);
     }
     

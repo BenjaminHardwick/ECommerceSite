@@ -2,19 +2,82 @@ main {
   min-height: 80vh;
 }
 
-
-
 h3 {
   padding: 1rem 0;
 }
-h1{
+
+h1 {
   font-size: 1.8rem;
   padding: 1rem 0;
- }
- h2{
+}
+
+h2 {
   font-size: 1.4rem;
   padding: 0.5rem 0;
- }
+}
+
 .rating span {
   margin: 0.1rem;
+}
+
+/* carousel */
+.carousel-item-next,
+.carousel-item-prev,
+.carousel-item.active {
+  display:flex;
+  
+  
+}
+.carousel-control-prev-icon{
+  background-color:gray !important;
+  position: relative !important;
+  bottom: 0rem !important;
+  width: 20px !important;
+  height: 25px !important;
+  border-radius: 25% !important;
+}
+.carousel-control-next-icon{
+  background-color:gray !important;
+  position: relative !important;
+  bottom:0rem !important;
+  width: 20px !important;
+  height: 25px !important;
+  border-radius: 25% !important;
+}
+.carousel-indicators li {
+  background-color:black !important;
+  position: relative !important;
+  bottom: 1em !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 100% !important;
+}
+.carousel-caption {
+  position: absolute;
+  top: 0;
+  margin: 0 auto;
+}
+
+.carousel-caption h2 {
+  color: rgb(0, 0, 0);
+}
+
+.carousel img {
+  height: 350px;
+  padding: 30px;
+  margin: 40px;
+  border-radius: 25%;
+  margin-left: auto;
+  margin-right: auto;
+}
+li {
+  background-color: rgb(0, 0, 0);
+}
+.carousel a {
+  margin: 0 auto;
+}
+@media (max-width: 900px) {
+  .carousel-caption h2 {
+    font-size: 2.5vw;
+  }
 }

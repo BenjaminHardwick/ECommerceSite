@@ -19,7 +19,7 @@ const addOrderedProducts = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('NO ORDERED ITEMS');
   } else {
-    console.log('order added to DB');
+   // console.log('order added to DB');
     const order = new Order({
       user: req.user._id,
       orderedProducts,
@@ -54,7 +54,7 @@ const getOrderById = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc update the order s.t. it is paid
+// @desc update the order if it is paid
 // @route GET /api/orders/:id/pay
 // @access Private
 
@@ -88,4 +88,41 @@ const getOrderHistory = asyncHandler(async (req, res) => {
   const orderHistory = await Order.find({ user: req.user._id });
   res.json(orderHistory);
 });
-export { addOrderedProducts, getOrderById, updateOrderIfPaid, getOrderHistory };
+
+// @desc gets every single order into one list
+// @route GET /api/orders
+// @access Private/Admin
+
+const getAllOrders = asyncHandler(async (req, res) => {
+  const orderHistory = await Order.find({}).populate('user', 'id name');
+  res.json(orderHistory);
+});
+
+// @desc update delivery status
+// @route GET /api/orders:id/deliver
+// @access Private/Admin
+
+const updateDeliveryStatus = asyncHandler(async (req, res) => {
+  const order = await Order.findById(req.params.id);
+
+  if (order) {
+    order.isDelivered = true;
+    order.deliveredAt = Date.now();
+
+    const updatedOrder = await order.save();
+
+    res.json(updatedOrder);
+  } else {
+    res.status(404);
+    throw new Error('Order not found');
+  }
+});
+
+export {
+  addOrderedProducts,
+  getOrderById,
+  updateOrderIfPaid,
+  updateDeliveryStatus,
+  getOrderHistory,
+  getAllOrders,
+};

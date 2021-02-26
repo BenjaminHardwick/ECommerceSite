@@ -13,6 +13,12 @@ import {
   ORDER_HISTORY_REQUEST,
   ORDER_HISTORY_SUCCESS,
   ORDER_HISTORY_FAIL,
+  ORDER_ALL_REQUEST,
+  ORDER_ALL_SUCCESS,
+  ORDER_ALL_FAIL,
+  ORDER_DELIVERY_STATUS_FAIL,
+  ORDER_DELIVERY_STATUS_REQUEST,
+  ORDER_DELIVERY_STATUS_SUCCESS,
 } from '../constants/orderConstants';
 import { logout } from './userActions';
 
@@ -57,7 +63,7 @@ export const createOrder = order => async (dispatch, getState) => {
 };
 export const getOrderInformation = id => async (dispatch, getState) => {
   try {
-    console.log('request order info');
+    //console.log('request order info');
     dispatch({
       type: ORDER_INFORMATION_REQUEST,
     });
@@ -73,7 +79,7 @@ export const getOrderInformation = id => async (dispatch, getState) => {
     };
 
     const { data } = await axios.get(`/api/orders/${id}`, config);
-    console.log('request order info success');
+   // console.log('request order info success');
     dispatch({
       type: ORDER_INFORMATION_SUCCESS,
       payload: data,
@@ -86,7 +92,7 @@ export const getOrderInformation = id => async (dispatch, getState) => {
     if (message === 'Not authorized, token failed') {
       dispatch(logout());
     }
-    console.log('request order info failed');
+    //console.log('request order info failed');
     dispatch({
       type: ORDER_INFORMATION_FAIL,
       payload: message,
@@ -99,7 +105,7 @@ export const makePayment = (orderId, paymentResult) => async (
   getState
 ) => {
   try {
-    console.log('request payment');
+   // console.log('request payment');
     dispatch({
       type: ORDER_PAYMENT_REQUEST,
     });
@@ -120,7 +126,7 @@ export const makePayment = (orderId, paymentResult) => async (
       paymentResult,
       config
     );
-    console.log('request payment success');
+   // console.log('request payment success');
     dispatch({
       type: ORDER_PAYMENT_SUCCESS,
       payload: data,
@@ -133,7 +139,7 @@ export const makePayment = (orderId, paymentResult) => async (
     if (message === 'Not authorized, token failed') {
       dispatch(logout());
     }
-    console.log('request payment failed');
+   // console.log('request payment failed');
     dispatch({
       type: ORDER_PAYMENT_FAIL,
       payload: message,
@@ -174,6 +180,87 @@ export const userOrderHistory = () => async (dispatch, getState) => {
     }
     dispatch({
       type: ORDER_HISTORY_FAIL,
+      payload: message,
+    });
+  }
+};
+
+export const makeDelivery = order => async (dispatch, getState) => {
+  try {
+    //console.log('request payment');
+    dispatch({
+      type: ORDER_DELIVERY_STATUS_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `/api/orders/${order._id}/delivery`,
+      {},
+      config
+    );
+  //  console.log('request payment success');
+    dispatch({
+      type: ORDER_DELIVERY_STATUS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === 'Not authorized, token failed') {
+      dispatch(logout());
+    }
+   // console.log('request delivery failed');
+    dispatch({
+      type: ORDER_DELIVERY_STATUS_FAIL,
+      payload: message,
+    });
+  }
+};
+
+export const getAllOrders = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: ORDER_ALL_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/orders`, config);
+
+    dispatch({
+      type: ORDER_ALL_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === 'Not authorized, token failed') {
+      dispatch(logout());
+    }
+    dispatch({
+      type: ORDER_ALL_FAIL,
       payload: message,
     });
   }
