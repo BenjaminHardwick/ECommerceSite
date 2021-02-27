@@ -18,6 +18,7 @@ import {
 import Message from '../components/Message';
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
+import MetaData from '../components/MetaData';
 import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants';
 const ProductScreen = ({ history, match }) => {
   const [quantity, setquantity] = useState(1);
@@ -72,6 +73,11 @@ const ProductScreen = ({ history, match }) => {
         <Message variant="danger">{error}</Message>
       ) : (
         <>
+          <MetaData
+            title={product.name}
+            description={product.description}
+            keyword={product.category}
+          />
           <Row>
             <Col md={6}>
               <Image src={product.image} alt={product.name} fluid></Image>
