@@ -2,7 +2,7 @@ import asyncHandler from 'express-async-handler';
 import Product from '../models/productModel.js';
 
 // @desc Fetch specific product
-// @route GET /api/products/
+// @route GET /api/products
 // @access Public
 
 const getProducts = asyncHandler(async (req, res) => {
@@ -42,21 +42,65 @@ const getProductsById = asyncHandler(async (req, res) => {
 });
 
 // @desc Fetch product by categories
+// @route GET /api/products/category/:category
+// @access Public
+
+/*
+  get list into array, and ensure that each category is unique
+
+*/
+
+const getProductByCategory = asyncHandler(async (req, res) => {
+  const products = await Product.find({ category: req.query.category });
+  //console.log(products);
+  res.json(products);
+});
+
+
+// @desc Fetch product by categories
+// @route GET /api/products/category/:category
+// @access Public
+
+/*
+  get list into array, and ensure that each category is unique
+
+*/
+
+const getProductByBrand = asyncHandler(async (req, res) => {
+  const products = await Product.find({ brand: req.query.brand });
+  console.log(products);
+  res.json(products);
+});
+
+
+// @desc Fetch categories
 // @route GET /api/products/categories
 // @access Public
 
+
 const getProductCategories = asyncHandler(async (req, res) => {
-  const categories = await Product.find({}, { _id: false, category: true });
-  // console.dir(categories);
-  //console.log(categories);
+  const categories = await Product.find(
+    {},
+    { _id: false, category: true }
+  ).distinct('category', function (error, ids) {
+    category: '$category';
+  });
+  //console.log.json((categories));
+  console.log(categories);
   res.json(categories);
 });
 
 const getProductBrands = asyncHandler(async (req, res) => {
-  const categories = await Product.find({}, { _id: false, brand: true });
-  //console.dir(categories);
-  // console.log(categories);
-  res.json(categories);
+  const brands = await Product.find({}, { _id: false, brand: true }).distinct(
+    'brand',
+    function (error, ids) {
+      brand: '$brand';
+    }
+  );
+  //console.log.json((categories));
+  console.log(brands);
+  brands;
+  res.json(brands);
 });
 
 // @desc DELETE specific product
@@ -186,7 +230,9 @@ export {
   createNewProduct,
   updateProduct,
   getProductCategories,
+  getProductByCategory,
   getProductBrands,
   newReview,
   getBestProducts,
+  getProductByBrand
 };

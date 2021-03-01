@@ -28,6 +28,12 @@ import {
   PRODUCT_BEST_RATED_REQUEST,
   PRODUCT_BEST_RATED_SUCCESS,
   PRODUCT_BEST_RATED_FAIL,
+  PRODUCT_LIST_BY_BRAND_REQUEST,
+  PRODUCT_LIST_BY_BRAND_FAIL,
+  PRODUCT_LIST_BY_BRAND_SUCCESS,
+  PRODUCT_LIST_BY_CATEGORY_SUCCESS,
+  PRODUCT_LIST_BY_CATEGORY_FAIL,
+  PRODUCT_LIST_BY_CATEGORY_REQUEST,
 } from '../constants/productConstants';
 
 export const listProducts = (
@@ -77,7 +83,7 @@ export const listProductCategories = () => async dispatch => {
   try {
     dispatch({ type: PRODUCT_LIST_CATEGORY_REQUEST });
 
-    const { data } = await axios.get('/api/products/categories');
+    const { data } = await axios.get(`/api/products/categories`);
     dispatch({
       type: PRODUCT_LIST_CATEGORY_SUCCESS,
       payload: data,
@@ -85,6 +91,46 @@ export const listProductCategories = () => async dispatch => {
   } catch (error) {
     dispatch({
       type: PRODUCT_LIST_CATEGORY_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+export const listProductsByBrand = (brand = '') => async dispatch => {
+  try {
+    dispatch({ type: PRODUCT_LIST_BY_BRAND_REQUEST });
+
+    const { data } = await axios.get(`/api/products/brand?brand=${brand}`);
+    dispatch({
+      type: PRODUCT_LIST_BY_BRAND_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_LIST_BY_BRAND_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+
+export const listProductsByCategory = (category = '') => async dispatch => {
+  try {
+    dispatch({ type: PRODUCT_LIST_BY_CATEGORY_REQUEST });
+
+    const { data } = await axios.get(`/api/products/category?category=${category}`);
+    dispatch({
+      type: PRODUCT_LIST_BY_CATEGORY_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_LIST_BY_CATEGORY_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

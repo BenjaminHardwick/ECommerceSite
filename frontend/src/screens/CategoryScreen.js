@@ -1,18 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Row, Col, Button } from 'react-bootstrap';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { listProductCategories } from '../actions/productActions';
 
 const CategoryScreen = () => {
+  const [category, setCategory] = useState('');
+
   const dispatch = useDispatch();
   const productCategory = useSelector(state => state.productCategory);
   const { loading, error, categories } = productCategory;
   useEffect(() => {
     dispatch(listProductCategories());
   }, [dispatch]);
-  //console.log(categories[0]);
+
+  //categories.forEach(item => console.log(item));
   return (
     <div>
       <h1>Categories</h1>
@@ -23,8 +27,17 @@ const CategoryScreen = () => {
       ) : (
         <Row>
           {categories.map(item => (
-            <Col key={item.category} sm={12} md={12} lg={12} xl={12}>
-              {item.category}
+            <Col key={item} sm={12}>
+              <ul>
+                <Link to={`/category/${item}`}>
+                  <Button
+                    variant="submit"
+                    onClick={e => setCategory(e.target.value)}
+                  >
+                    {item}
+                  </Button>
+                </Link>
+              </ul>
             </Col>
           ))}
         </Row>

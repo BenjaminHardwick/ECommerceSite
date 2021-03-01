@@ -5,6 +5,8 @@ import {
   deleteProduct,
   getBestProducts,
   getProductBrands,
+  getProductByBrand,
+  getProductByCategory,
   getProductCategories,
   getProducts,
   getProductsById,
@@ -25,6 +27,8 @@ router
   .get(getProducts)
   .post(protect, isAdministrator, createNewProduct);
 
+router.get('/brand', getProductByBrand);
+router.get('/category', getProductByCategory);
 router.get('/brands', getProductBrands);
 router.get('/categories', getProductCategories);
 router.route('/:id/reviews').post(protect, newReview);

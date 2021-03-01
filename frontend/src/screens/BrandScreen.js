@@ -1,11 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Row, Col, Button } from 'react-bootstrap';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { listProductBrands } from '../actions/productActions';
 
 const BrandScreen = () => {
+  const [brand, setBrand] = useState('');
   const dispatch = useDispatch();
   const productBrands = useSelector(state => state.productBrands);
   const { loading, error, brands } = productBrands;
@@ -23,8 +25,17 @@ const BrandScreen = () => {
       ) : (
         <Row>
           {brands.map(item => (
-            <Col key={item.brand} sm={12} md={12} lg={12} xl={12}>
-              {item.brand}
+            <Col key={item} sm={12}>
+              <ul>
+                <Link to={`/brand/${item}`}>
+                  <Button
+                    variant="submit"
+                    onClick={e => setBrand(e.target.value)}
+                  >
+                    {item}
+                  </Button>
+                </Link>
+              </ul>
             </Col>
           ))}
         </Row>

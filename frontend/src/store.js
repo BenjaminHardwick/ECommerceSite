@@ -12,6 +12,8 @@ import {
   productListCategoryReducer,
   createReviewReducer,
   bestRatedProductReducer,
+  productListByBrandsReducer,
+  productListByCategoryReducer,
 } from './reducers/productsReducers.js';
 // User Reducers
 import {
@@ -38,6 +40,8 @@ const reducer = combineReducers({
   productList: productListReducer,
   productBrands: productListBrandsReducer,
   productCategory: productListCategoryReducer,
+  productByBrand: productListByBrandsReducer,
+  productByCategory: productListByCategoryReducer,
   productDetails: productDetailsReducer,
   productRemove: removeProductReducer,
   productCreate: createNewProductReducer,

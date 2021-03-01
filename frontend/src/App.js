@@ -21,6 +21,8 @@ import CategoryScreen from './screens/CategoryScreen';
 import BrandScreen from './screens/BrandScreen';
 import OrderLogbookScreen from './screens/OrderLogbookScreen';
 import SearchBar from './components/SearchBar';
+import ProductByCategoryScreen from './screens/ProductByCategoryScreen';
+import ProductByBrandScreen from './screens/ProductByBrandSceen';
 
 const App = () => {
   return (
@@ -54,6 +56,8 @@ const App = () => {
           <Route path="/product/:id" component={ProductScreen} />
           <Route path="/cart/:id?" component={CartScreen} />
           <Route path="/search/:keyword" component={HomeScreen} exact />
+          <Route path="/category/:category" component={ProductByCategoryScreen} exact />
+          <Route path="/brand/:brand" component={ProductByBrandScreen} exact />
           <Route path="/page/:pageNumber" component={HomeScreen} exact />
           <Route
             path="/search/:keyword/:page/:pageNumber"

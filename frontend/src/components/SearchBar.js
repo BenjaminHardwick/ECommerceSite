@@ -21,7 +21,7 @@ const SearchBar = ({ history }) => {
         placeholder="Find what you came for..."
         className="mr-sm-3 ml-sm-5"
       ></Form.Control>
-      <Button type="submit" variant="outline-light" classname="p-2">
+      <Button type="submit" variant="outline-light" classame="p-2">
         Search
       </Button>
     </Form>
