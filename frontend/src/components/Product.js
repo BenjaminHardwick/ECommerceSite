@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Card } from 'react-bootstrap';
 
 const Product = ({ product }) => {
+  console.log(product.image);
   return (
     <div>
       <Card className="my-3 p-3 rounded">

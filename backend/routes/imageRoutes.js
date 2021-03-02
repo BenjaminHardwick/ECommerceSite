@@ -10,12 +10,12 @@ const storage = multer.diskStorage({
   filename(req, file, cb) {
     cb(
       null,
-      // gets extension of a file name i.e jpeg/jpg/png
       `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
     );
   },
 });
 
+// gets extension of a file name i.e jpeg/jpg/png
 function checkFileType(file, cb) {
   const filetypes = /jpg|jpeg|png/;
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());

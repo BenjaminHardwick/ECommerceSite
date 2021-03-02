@@ -42,11 +42,12 @@ const EditProductScreen = ({ match, history }) => {
       dispatch({ type: PRODUCT_UPDATE_RESET });
       history.push('/admin/manage-products');
     } else {
-      if (!product.name || productId) {
+      if (!product.name || productId !== product._id) {
         dispatch(listProductDetails(productId));
       } else {
         setName(product.name);
         setPrice(product.price);
+        setImage(product.image);
         setBrand(product.brand);
         setCategory(product.category);
         setCountInStock(product.countInStock);
@@ -133,7 +134,7 @@ const EditProductScreen = ({ match, history }) => {
               <Form.Label>Upload Image</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter image url"
+                placeholder="Enter the image url"
                 value={image}
                 onChange={e => setImage(e.target.value)}
               ></Form.Control>
