@@ -6,7 +6,7 @@ import Product from '../models/productModel.js';
 // @access Public
 
 const getProducts = asyncHandler(async (req, res) => {
-  const pageSize = 10;
+  const pageSize = 8;
 
   const page = Number(req.query.pageNumber) || 1;
 
@@ -19,11 +19,27 @@ const getProducts = asyncHandler(async (req, res) => {
       }
     : {};
 
-  const count = await Product.countDocuments({ ...queries });
+  const categories = req.query.queries
+    ? {
+        category: {
+          $regex: req.query.queries,
+          $options: 'i',
+        },
+      }
+    : {};
 
-  const products = await Product.find({ ...queries })
+  const count = await Product.countDocuments({ ...queries });
+  var products = await Product.find({ ...queries })
     .limit(pageSize)
     .skip(pageSize * (page - 1));
+
+  if (products.length <= 0) {
+    var products = await Product.find({ ...categories })
+      .limit(pageSize)
+      .skip(pageSize * (page - 1));
+  }
+  //console.log(products);
+
   res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
 
@@ -56,7 +72,6 @@ const getProductByCategory = asyncHandler(async (req, res) => {
   res.json(products);
 });
 
-
 // @desc Fetch product by categories
 // @route GET /api/products/category/:category
 // @access Public
@@ -72,11 +87,9 @@ const getProductByBrand = asyncHandler(async (req, res) => {
   res.json(products);
 });
 
-
 // @desc Fetch categories
 // @route GET /api/products/categories
 // @access Public
-
 
 const getProductCategories = asyncHandler(async (req, res) => {
   const categories = await Product.find(
@@ -86,7 +99,7 @@ const getProductCategories = asyncHandler(async (req, res) => {
     category: '$category';
   });
   //console.log.json((categories));
-  console.log(categories);
+ // console.log(categories);
   res.json(categories);
 });
 
@@ -98,7 +111,7 @@ const getProductBrands = asyncHandler(async (req, res) => {
     }
   );
   //console.log.json((categories));
-  console.log(brands);
+  //console.log(brands);
   brands;
   res.json(brands);
 });
@@ -124,15 +137,15 @@ const deleteProduct = asyncHandler(async (req, res) => {
 
 const createNewProduct = asyncHandler(async (req, res) => {
   const product = new Product({
-    name: 'Sample name',
+    name: 'Sample',
     price: 0,
     user: req.user._id,
-    image: '/images/sample.jpg',
-    brand: 'Sample brand',
-    category: 'Sample category',
-    countInStock: 0,
+    image: '/imgUpload/sample.jpg',
+    brand: 'Example (Gucci)',
+    category: 'Books',
+    countInStock: 10,
     numReviews: 0,
-    description: 'Sample description',
+    description: 'Replace me with words',
   });
   const newProduct = await product.save();
   res.status(201).json(newProduct);
@@ -178,7 +191,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 
 const newReview = asyncHandler(async (req, res) => {
   const { rating, comment } = req.body;
-  console.log(req.body);
+  //console.log(req.body);
   const product = await Product.findById(req.params.id);
 
   if (product) {
@@ -234,5 +247,5 @@ export {
   getProductBrands,
   newReview,
   getBestProducts,
-  getProductByBrand
+  getProductByBrand,
 };

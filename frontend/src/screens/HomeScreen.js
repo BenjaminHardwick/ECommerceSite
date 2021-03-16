@@ -17,6 +17,8 @@ const HomeScreen = ({ match }) => {
   const dispatch = useDispatch();
   const productList = useSelector(state => state.productList);
   const { loading, error, products, page, pages } = productList;
+  const itemsInLocal =
+    JSON.parse(localStorage.getItem('productDataArray')) || [];
 
   useEffect(() => {
     dispatch(listProducts(keyword, pageNumber));
@@ -31,6 +33,20 @@ const HomeScreen = ({ match }) => {
         <Link to="/" className="btn btn-light">
           Go back
         </Link>
+      )}
+      {itemsInLocal.length >= 1 && (
+        <>
+          <h2>Your Browsing History</h2>
+          <div className="row row-horizon">
+            <div className="d-flex flex-row flex-nowrap overflow-auto">
+              {itemsInLocal.map(product => (
+                <div className="col-3">
+                  <Product product={JSON.parse(product)} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
       )}
       <h1>Lastest Products</h1>
       {loading ? (

@@ -49,10 +49,18 @@ const OrderScreen = ({ match, history }) => {
         0
       )
     );
-    order.priceWithTax = add(order.productPrice * 0.2);
-    order.finalPrice = add(order.productPrice + order.priceWithTax);
-    order.deliveryFee = 15;
-    order.finalPrice = order.finalPrice + order.deliveryFee;
+    order.deliveryFee = order.productPrice > 999 ? 0 : order.productPrice / 100;
+
+    order.priceWithTax = Number((0.2 * order.productPrice).toFixed(2));
+    order.priceWithTax = Math.round((order.priceWithTax * 100) / 100).toFixed(
+      2
+    );
+
+    order.finalPrice =
+      Number(order.productPrice) +
+      Number(order.deliveryFee) +
+      Number(order.priceWithTax);
+    order.finalPrice = order.finalPrice.toFixed(2);
 
     //console.log(order.deliveryFee);
   }

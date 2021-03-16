@@ -9,6 +9,7 @@ import {
   Card,
   Button,
   Form,
+  Container,
 } from 'react-bootstrap';
 
 import {
@@ -18,13 +19,17 @@ import {
 import Message from '../components/Message';
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
+import Product from '../components/Product';
 import MetaData from '../components/MetaData';
 import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants';
+
 const ProductScreen = ({ history, match }) => {
   const [quantity, setquantity] = useState(1);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState(' ');
-
+  const clearCachedInformation = () => {
+    localStorage.clear('productDataArray');
+  };
   const dispatch = useDispatch();
 
   const productDetails = useSelector(state => state.productDetails);
@@ -39,6 +44,10 @@ const ProductScreen = ({ history, match }) => {
 
   const userLogin = useSelector(state => state.userLogin);
   const { userInfo } = userLogin;
+
+  const itemsInLocal = JSON.parse(localStorage.getItem('productDataArray')) || [];
+  //console.log("items in local" + itemsInLocal);
+  //console.log("items in local spreaded" + [...itemsInLocal]);
 
   useEffect(() => {
     if (newReviewSuccess) {
@@ -66,6 +75,13 @@ const ProductScreen = ({ history, match }) => {
     <>
       <Link className="btn btn-light my-3" to="/">
         Go Back
+      </Link>
+      <Link
+        className="btn btn-light my-3"
+        to="/"
+        onClick={clearCachedInformation}
+      >
+        Clear Recent Viewed
       </Link>
       {loading ? (
         <Loader />
@@ -155,6 +171,22 @@ const ProductScreen = ({ history, match }) => {
               </Card>
             </Col>
           </Row>
+
+          {itemsInLocal.length !== null && (
+            <>
+              <h2>Recently Viewed</h2>
+              <div className="row row-horizon">
+                <div className="d-flex flex-row flex-nowrap overflow-auto">
+                  {itemsInLocal.map(product => (
+                    <div className="col-3" >
+                      <Product product={JSON.parse(product)} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
           <Row>
             <Col md={6}>
               <h2>Reviews</h2>
