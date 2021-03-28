@@ -1,5 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Product from '../models/productModel.js';
+import child_process from 'child_process';
+import { text } from 'express';
 
 // @desc Fetch specific product
 // @route GET /api/products
@@ -99,7 +101,7 @@ const getProductCategories = asyncHandler(async (req, res) => {
     category: '$category';
   });
   //console.log.json((categories));
- // console.log(categories);
+  // console.log(categories);
   res.json(categories);
 });
 
@@ -137,12 +139,12 @@ const deleteProduct = asyncHandler(async (req, res) => {
 
 const createNewProduct = asyncHandler(async (req, res) => {
   const product = new Product({
-    name: 'Sample',
+    name: 'Example Name',
     price: 0,
     user: req.user._id,
     image: '/imgUpload/sample.jpg',
-    brand: 'Example (Gucci)',
-    category: 'Books',
+    brand: 'Example Brand',
+    category: 'Example Category',
     countInStock: 10,
     numReviews: 0,
     description: 'Replace me with words',
@@ -236,6 +238,48 @@ const getBestProducts = asyncHandler(async (req, res) => {
   const products = await Product.find({}).sort({ rating: -1 }).limit(5);
   res.json(products);
 });
+let output;
+
+const getKNNRecommendations = asyncHandler(async (req, res) => {
+  var spawn = child_process.spawn;
+
+  var py_process = spawn('python', [
+    'C:/Users/benhe/OneDrive/Documents/University/Final Year Project/E-Commerce Site/backend/controllers/db.py',
+  ]);
+  //console.log(py_process);
+  var uint8arrayToString = function (data) {
+    return String.fromCharCode.apply(null, data);
+  };
+
+  var addToProducts = function (output) {
+    var productNames = [];
+    var item = '';
+    for (var name in output) {
+      item = output[name].name;
+      console.log(item);
+      productNames.push(item);
+    }
+    //console.log('product names: ', productNames);
+
+    return productNames;
+  };
+
+  py_process.stdout.on('data', (data) => {
+    output = JSON.parse(data);
+  });
+
+  var product_names = addToProducts(output);
+
+  const recommendations = await Product.find({ name: product_names }).sort({
+    rating: -1,
+  });
+  if (recommendations.length == 0 || recommendations == null) {
+    getKNNRecommendations();
+  } else {
+    res.json(recommendations);
+  }
+});
+
 export {
   getProducts,
   getProductsById,
@@ -248,4 +292,5 @@ export {
   newReview,
   getBestProducts,
   getProductByBrand,
+  getKNNRecommendations,
 };

@@ -67,7 +67,7 @@ const DeliveryScreen = ({ history }) => {
           ></Form.Control>
         </Form.Group>{' '}
         <Button type="submit" variant="primary">
-          Finalize payment
+          Continue
         </Button>
       </Form>
     </FormContainer>

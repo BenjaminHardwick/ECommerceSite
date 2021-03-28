@@ -36,6 +36,9 @@ import {
   PRODUCT_LIST_BY_CATEGORY_SUCCESS,
   PRODUCT_LIST_BY_CATEGORY_FAIL,
   PRODUCT_LIST_BY_BRAND_REQUEST,
+  PRODUCT_LIST_RECOMMENDATIONS_REQUEST,
+  PRODUCT_LIST_RECOMMENDATIONS_SUCCESS,
+  PRODUCT_LIST_RECOMMENDATIONS_FAIL,
 } from '../constants/productConstants.js';
 
 export const productListReducer = (state = { products: [] }, action) => {
@@ -68,6 +71,23 @@ export const productListBrandsReducer = (state = { brands: [] }, action) => {
       return state;
   }
 };
+
+export const productListKNNRecommendations = (
+  state = { recommended: [] },
+  action
+) => {
+  switch (action.type) {
+    case PRODUCT_LIST_RECOMMENDATIONS_REQUEST:
+      return { loading: true, recommended: [] };
+    case PRODUCT_LIST_RECOMMENDATIONS_SUCCESS:
+      return { loading: false, recommended: action.payload };
+    case PRODUCT_LIST_RECOMMENDATIONS_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
 export const productListCategoryReducer = (
   state = { categories: [] },
   action

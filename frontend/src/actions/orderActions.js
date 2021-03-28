@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { CART_CLEAR_ITEMS } from '../constants/cartConstants';
 
 import {
   ORDER_CREATE_REQUEST,
@@ -45,8 +46,11 @@ export const createOrder = order => async (dispatch, getState) => {
       type: ORDER_CREATE_SUCCESS,
       payload: data,
     });
-
-    //localStorage.removeItem('cartItems');
+    dispatch({
+      type: CART_CLEAR_ITEMS,
+      payload: data,
+    });
+    localStorage.removeItem('cartItems');
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -79,7 +83,7 @@ export const getOrderInformation = id => async (dispatch, getState) => {
     };
 
     const { data } = await axios.get(`/api/orders/${id}`, config);
-   // console.log('request order info success');
+    // console.log('request order info success');
     dispatch({
       type: ORDER_INFORMATION_SUCCESS,
       payload: data,
@@ -105,7 +109,7 @@ export const makePayment = (orderId, paymentResult) => async (
   getState
 ) => {
   try {
-   // console.log('request payment');
+    // console.log('request payment');
     dispatch({
       type: ORDER_PAYMENT_REQUEST,
     });
@@ -126,7 +130,7 @@ export const makePayment = (orderId, paymentResult) => async (
       paymentResult,
       config
     );
-   // console.log('request payment success');
+    // console.log('request payment success');
     dispatch({
       type: ORDER_PAYMENT_SUCCESS,
       payload: data,
@@ -139,7 +143,7 @@ export const makePayment = (orderId, paymentResult) => async (
     if (message === 'Not authorized, token failed') {
       dispatch(logout());
     }
-   // console.log('request payment failed');
+    // console.log('request payment failed');
     dispatch({
       type: ORDER_PAYMENT_FAIL,
       payload: message,
@@ -208,7 +212,7 @@ export const makeDelivery = order => async (dispatch, getState) => {
       {},
       config
     );
-  //  console.log('request payment success');
+    //  console.log('request payment success');
     dispatch({
       type: ORDER_DELIVERY_STATUS_SUCCESS,
       payload: data,
@@ -221,7 +225,7 @@ export const makeDelivery = order => async (dispatch, getState) => {
     if (message === 'Not authorized, token failed') {
       dispatch(logout());
     }
-   // console.log('request delivery failed');
+    // console.log('request delivery failed');
     dispatch({
       type: ORDER_DELIVERY_STATUS_FAIL,
       payload: message,

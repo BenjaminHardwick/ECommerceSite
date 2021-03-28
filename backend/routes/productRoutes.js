@@ -4,6 +4,7 @@ import {
   createNewProduct,
   deleteProduct,
   getBestProducts,
+  getKNNRecommendations,
   getProductBrands,
   getProductByBrand,
   getProductByCategory,
@@ -33,6 +34,7 @@ router.get('/brands', getProductBrands);
 router.get('/categories', getProductCategories);
 router.route('/:id/reviews').post(protect, newReview);
 router.get('/best', getBestProducts);
+router.get('/recommendations', getKNNRecommendations);
 
 // @desc Fetch specific product
 // @route GET /api/products/:id

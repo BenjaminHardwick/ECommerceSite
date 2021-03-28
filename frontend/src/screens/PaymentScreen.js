@@ -66,7 +66,7 @@ const PaymentScreen = ({ history }) => {
         </Col>
 
         <Button type="submit" variant="primary">
-          Finalize payment
+         Choose Method
         </Button>
       </Form>
     </FormContainer>

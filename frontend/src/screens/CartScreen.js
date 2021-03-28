@@ -50,7 +50,7 @@ const CartScreen = ({ match, location, history }) => {
                 <Row>
                   <Col md={2}>
                     <Image
-                      src={item.Image}
+                      src={item.image}
                       alt={item.name}
                       fluid
                       rounded

@@ -34,6 +34,9 @@ import {
   PRODUCT_LIST_BY_CATEGORY_SUCCESS,
   PRODUCT_LIST_BY_CATEGORY_FAIL,
   PRODUCT_LIST_BY_CATEGORY_REQUEST,
+  PRODUCT_LIST_RECOMMENDATIONS_REQUEST,
+  PRODUCT_LIST_RECOMMENDATIONS_SUCCESS,
+  PRODUCT_LIST_RECOMMENDATIONS_FAIL,
 } from '../constants/productConstants';
 
 export const listProducts = (
@@ -110,6 +113,26 @@ export const listProductsByBrand = (brand = '') => async dispatch => {
   } catch (error) {
     dispatch({
       type: PRODUCT_LIST_BY_BRAND_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const listProductsByRecommendations = () => async dispatch => {
+  try {
+    dispatch({ type: PRODUCT_LIST_RECOMMENDATIONS_REQUEST });
+
+    const { data } = await axios.get(`/api/products/recommendations`);
+    dispatch({
+      type: PRODUCT_LIST_RECOMMENDATIONS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_LIST_RECOMMENDATIONS_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

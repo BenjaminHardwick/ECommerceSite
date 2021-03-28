@@ -19,7 +19,7 @@ const addOrderedProducts = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('NO ORDERED ITEMS');
   } else {
-   // console.log('order added to DB');
+    // console.log('order added to DB');
     const order = new Order({
       user: req.user._id,
       orderedProducts,
@@ -50,7 +50,7 @@ const getOrderById = asyncHandler(async (req, res) => {
     res.json(order);
   } else {
     res.status(404);
-    throw new Error('Order not found');
+    throw new Error('Order does not exist');
   }
 });
 

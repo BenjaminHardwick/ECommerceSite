@@ -14,6 +14,7 @@ import {
   bestRatedProductReducer,
   productListByBrandsReducer,
   productListByCategoryReducer,
+  productListKNNRecommendations,
 } from './reducers/productsReducers.js';
 // User Reducers
 import {
@@ -48,6 +49,7 @@ const reducer = combineReducers({
   productBestRated: bestRatedProductReducer,
   productUpdate: updateProductReducer,
   productNewReview: createReviewReducer,
+  productKNNRecommended: productListKNNRecommendations,
   cart: cartReducer,
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,

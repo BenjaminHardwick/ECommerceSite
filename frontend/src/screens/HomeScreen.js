@@ -20,6 +20,17 @@ const HomeScreen = ({ match }) => {
   const itemsInLocal =
     JSON.parse(localStorage.getItem('productDataArray')) || [];
 
+  function browsingHistory() {
+    if (itemsInLocal === null) {
+      return false;
+    } else {
+      if (itemsInLocal.length <= 2) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
   useEffect(() => {
     dispatch(listProducts(keyword, pageNumber));
   }, [dispatch, keyword, pageNumber]);
@@ -34,20 +45,7 @@ const HomeScreen = ({ match }) => {
           Go back
         </Link>
       )}
-      {itemsInLocal.length >= 1 && (
-        <>
-          <h2>Your Browsing History</h2>
-          <div className="row row-horizon">
-            <div className="d-flex flex-row flex-nowrap overflow-auto">
-              {itemsInLocal.map(product => (
-                <div className="col-3">
-                  <Product product={JSON.parse(product)} />
-                </div>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
+
       <h1>Lastest Products</h1>
       {loading ? (
         <Loader />
@@ -74,6 +72,20 @@ const HomeScreen = ({ match }) => {
             page={page}
             keyword={keyword ? keyword : ''}
           />
+        </>
+      )}
+      {browsingHistory() && (
+        <>
+          <h2>Your Browsing History</h2>
+          <div className="row row-horizon">
+            <div className="d-flex flex-row flex-nowrap overflow-auto">
+              {itemsInLocal.map(product => (
+                <div className="content">
+                  <Product product={JSON.parse(product)} />
+                </div>
+              ))}
+            </div>
+          </div>
         </>
       )}
     </>

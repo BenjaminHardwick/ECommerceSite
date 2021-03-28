@@ -86,6 +86,7 @@ const ProfileScreen = ({ location, history }) => {
           <Form.Group controlId="name">
             <Form.Label>Name</Form.Label>
             <Form.Control
+              autoComplete="username"
               type="name"
               placeholder="Enter Name"
               value={name}
@@ -96,6 +97,7 @@ const ProfileScreen = ({ location, history }) => {
           <Form.Group controlId="email">
             <Form.Label>Email</Form.Label>
             <Form.Control
+              autoComplete="email"
               type="email"
               placeholder="Enter Email"
               value={email}
@@ -106,15 +108,17 @@ const ProfileScreen = ({ location, history }) => {
           <Form.Group controlId="password">
             <Form.Label>Password</Form.Label>
             <Form.Control
+              autoComplete="new-password"
               type="password"
               placeholder="Enter password"
               value={password}
               onChange={e => setPassword(e.target.value)}
             ></Form.Control>
           </Form.Group>
-          <Form.Group controlId="confirmPassword">
+          <Form.Group controlId="confimPassword">
             <Form.Label>Confirm Your Password</Form.Label>
             <Form.Control
+              autoComplete="new-password"
               type="password"
               placeholder="Confirm password"
               value={confirmPassword}

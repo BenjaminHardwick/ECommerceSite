@@ -83,10 +83,9 @@ const OrderScreen = ({ match, history }) => {
       document.body.appendChild(script);
     };
 
-    if (!order || deliverySuccess || paymentSuccess) {
+    if (!order || deliverySuccess || paymentSuccess || order._id !== orderId) {
       dispatch({ type: ORDER_PAYMENT_RESET });
       dispatch({ type: ORDER_DELIVERY_STATUS_RESET });
-
       dispatch(getOrderInformation(orderId));
     } else if (!order.isPaid) {
       if (!window.paypal) {
@@ -101,7 +100,6 @@ const OrderScreen = ({ match, history }) => {
     paymentSuccess,
     deliverySuccess,
     userInfo,
-    history,
     orderId,
   ]);
 
@@ -147,11 +145,12 @@ const OrderScreen = ({ match, history }) => {
               <p>
                 {order.isDelivered ? (
                   <Message variant="success">
-                    Delivered on {order.isDelivered}
+                    Delivered on {order.deliveredAt.substring(0, 10)}
                   </Message>
-                ) : (
+                    ) : order.isPaid ? (
+                      
                   <Message variant="danger">Currently being delivered</Message>
-                )}
+                ): (<Message variant=""></Message>)}
               </p>
             </ListGroup.Item>
 
@@ -160,7 +159,9 @@ const OrderScreen = ({ match, history }) => {
               <strong>Provider: {order.paymentMethod}</strong>
               <p>
                 {order.isPaid ? (
-                  <Message variant="success">Paid on {order.paidAt}</Message>
+                  <Message variant="success">
+                    Paid on {order.paidAt.substring(0, 10)}
+                  </Message>
                 ) : (
                   <Message variant="danger">Payment incomplete</Message>
                 )}

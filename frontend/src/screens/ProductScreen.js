@@ -15,6 +15,7 @@ import {
 import {
   createProductReview,
   listProductDetails,
+  listProductsByRecommendations,
 } from '../actions/productActions';
 import Message from '../components/Message';
 import Rating from '../components/Rating';
@@ -35,6 +36,16 @@ const ProductScreen = ({ history, match }) => {
   const productDetails = useSelector(state => state.productDetails);
   const { loading, error, product } = productDetails;
 
+  const productKNNRecommended = useSelector(
+    state => state.productKNNRecommended
+  );
+  const {
+    loading: recommendationLoading,
+    error: recommendationError,
+    recommended,
+  } = productKNNRecommended;
+  console.log(recommended);
+
   const productNewReview = useSelector(state => state.productNewReview);
   const {
     loading: loadingReview,
@@ -45,8 +56,9 @@ const ProductScreen = ({ history, match }) => {
   const userLogin = useSelector(state => state.userLogin);
   const { userInfo } = userLogin;
 
-  const itemsInLocal = JSON.parse(localStorage.getItem('productDataArray')) || [];
-  //console.log("items in local" + itemsInLocal);
+  const itemsInLocal =
+    JSON.parse(localStorage.getItem('productDataArray')) || [];
+  console.log("items in local" + itemsInLocal);
   //console.log("items in local spreaded" + [...itemsInLocal]);
 
   useEffect(() => {
@@ -58,6 +70,7 @@ const ProductScreen = ({ history, match }) => {
     if (!product._id || product._id !== match.params.id) {
       dispatch(listProductDetails(match.params.id));
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
+      dispatch(listProductsByRecommendations());
     }
     //dispatch(listProductDetails(match.params.id));
   }, [dispatch, match, newReviewSuccess, product]);
@@ -65,6 +78,18 @@ const ProductScreen = ({ history, match }) => {
   const addToCartHandler = () => {
     history.push(`/cart/${match.params.id}?qty=${quantity}`);
   };
+
+  function browsingHistory() {
+    if (itemsInLocal === null) {
+      return false;
+    } else {
+      if (itemsInLocal.length <= 1) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
 
   const submitHandler = e => {
     e.preventDefault();
@@ -171,14 +196,33 @@ const ProductScreen = ({ history, match }) => {
               </Card>
             </Col>
           </Row>
+          <div></div>
+          {recommendationLoading ? (
+            <Loader />
+          ) : recommendationError ? (
+            <Message variant="danger">{recommendationError}</Message>
+          ) : (
+            <>
+              <h2>We Recommend</h2>
+              <div className="row row-horizon">
+                <div className="d-flex flex-row flex-nowrap overflow-auto">
+                  {recommended.map(product => (
+                    <div className="content">
+                      <Product product={product} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
 
-          {itemsInLocal.length !== null && (
+          {browsingHistory() && (
             <>
               <h2>Recently Viewed</h2>
               <div className="row row-horizon">
                 <div className="d-flex flex-row flex-nowrap overflow-auto">
                   {itemsInLocal.map(product => (
-                    <div className="col-3" >
+                    <div className="content">
                       <Product product={JSON.parse(product)} />
                     </div>
                   ))}
