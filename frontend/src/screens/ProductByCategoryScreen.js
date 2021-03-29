@@ -4,7 +4,6 @@ import { Row, Col } from 'react-bootstrap';
 import Product from '../components/Product';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import Paginate from '../components/Paginate';
 import MetaData from '../components/MetaData';
 import {
   listProductsByCategory,
@@ -19,8 +18,6 @@ const ProductByCategoryScreen = ({ match }) => {
   const productByCategory = useSelector(state => state.productByCategory);
   const { loading, error, products } = productByCategory;
 
-  console.log(category);
-  console.log(products);
   useEffect(() => {
     dispatch(listProductsByCategory(category));
   }, [dispatch, category, pageNumber]);

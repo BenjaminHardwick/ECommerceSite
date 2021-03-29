@@ -57,7 +57,7 @@ const ProductScreen = ({ history, match }) => {
 
   const itemsInLocal =
     JSON.parse(localStorage.getItem('productDataArray')) || [];
-  console.log('items in local' + itemsInLocal);
+  //console.log('items in local' + itemsInLocal);
   //console.log("items in local spreaded" + [...itemsInLocal]);
 
   useEffect(() => {
@@ -69,6 +69,7 @@ const ProductScreen = ({ history, match }) => {
     if (!product._id || product._id !== match.params.id) {
       dispatch(listProductDetails(match.params.id));
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
+      
       dispatch(listProductsByRecommendations(match.params.id));
     }
     //dispatch(listProductDetails(match.params.id));
@@ -206,8 +207,8 @@ const ProductScreen = ({ history, match }) => {
               </Card>
             </Col>
           </Row>
-          {recommendProducts() &&
-            (recommendationLoading ? (
+          {!recommendProducts() ? (<></>) : (
+            recommendationLoading ? (
               <Loader />
             ) : recommendationError ? (
               <Message variant="danger">{recommendationError}</Message>
@@ -218,7 +219,7 @@ const ProductScreen = ({ history, match }) => {
                   <div className="d-flex flex-row flex-nowrap overflow-auto">
                     {recommended.map(product => (
                       <div className="content">
-                        <Product product={product} />
+                        <Product key={product.name} product={product} />
                       </div>
                     ))}
                   </div>

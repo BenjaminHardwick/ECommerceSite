@@ -7,7 +7,10 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import Paginate from '../components/Paginate';
 import MetaData from '../components/MetaData';
-import { listProducts } from '../actions/productActions';
+import {
+  listProducts,
+  listProductsByCategory,
+} from '../actions/productActions';
 import BestProductsCarousel from '../components/BestProductsCarousel';
 
 const HomeScreen = ({ match }) => {
@@ -19,6 +22,30 @@ const HomeScreen = ({ match }) => {
   const { loading, error, products, page, pages } = productList;
   const itemsInLocal =
     JSON.parse(localStorage.getItem('productDataArray')) || [];
+
+  const productByCategory = useSelector(state => state.productByCategory);
+  const {
+    loading: productCategoryLoading,
+    error: categoryError,
+    products: productByCategories,
+  } = productByCategory;
+
+  function getRandomInt() {
+    var max = itemsInLocal.length;
+    return Math.floor(Math.random() * (max - 1 - 1 + 1) + 1);
+  }
+  const categories = requestCategoryRecommendation();
+  function requestCategoryRecommendation() {
+    var productOfChoice = getRandomInt();
+    if (browsingHistory() == true) {
+      // console.log('random int chosen= ', productOfChoice);
+      //console.log(JSON.parse(itemsInLocal[productOfChoice]))
+      let recommended = JSON.parse(itemsInLocal[productOfChoice]);
+      var category = recommended.category;
+      return category;
+    } else {
+    }
+  }
 
   function browsingHistory() {
     if (itemsInLocal === null) {
@@ -33,6 +60,9 @@ const HomeScreen = ({ match }) => {
   }
   useEffect(() => {
     dispatch(listProducts(keyword, pageNumber));
+    if (browsingHistory()) {
+      dispatch(listProductsByCategory(categories));
+    }
   }, [dispatch, keyword, pageNumber]);
 
   return (
@@ -72,6 +102,25 @@ const HomeScreen = ({ match }) => {
             page={page}
             keyword={keyword ? keyword : ''}
           />
+        </>
+      )}
+
+      {!browsingHistory() ? (
+        <></>
+      ) : productCategoryLoading ? (
+        <Loader />
+      ) : categoryError ? (
+        <Message variant="danger">{error}</Message>
+      ) : (
+        <>
+          <h3>We thought you would like</h3>
+          <Row>
+            {productByCategories.map(product => (
+              <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+                <Product product={product} />
+              </Col>
+            ))}
+          </Row>
         </>
       )}
       {browsingHistory() && (

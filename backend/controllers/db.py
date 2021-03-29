@@ -81,6 +81,8 @@ def KNN(ratings, data_products, chosen_product):
 
     #for i in range(0, recommend.shape[0]):
         #print('{0}:{1}, with distance of {2}'.format(i, recommend['name'].iloc[i], recommend['distance'].iloc[i]))
+
+        
     result = recommend.to_json(orient="records")
     parsed = json.loads(result)
     return json.dumps(parsed, indent=4)
