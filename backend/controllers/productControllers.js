@@ -1,7 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Product from '../models/productModel.js';
 import child_process from 'child_process';
-import { text } from 'express';
 
 // @desc Fetch specific product
 // @route GET /api/products
@@ -240,16 +239,18 @@ const getBestProducts = asyncHandler(async (req, res) => {
 });
 let output;
 
+// @desc Get KNN recommendations based on ratings
+// @route Get /api/products/recommendations/:id
+// @access public
+
 const getKNNRecommendations = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  //console.log(id);
   var spawn = child_process.spawn;
 
   var py_process = spawn('python', [
     'C:/Users/benhe/OneDrive/Documents/University/Final Year Project/E-Commerce Site/backend/controllers/db.py',
   ]);
-  //console.log(py_process);
-  var uint8arrayToString = function (data) {
-    return String.fromCharCode.apply(null, data);
-  };
 
   var addToProducts = function (output) {
     var productNames = [];
@@ -259,12 +260,13 @@ const getKNNRecommendations = asyncHandler(async (req, res) => {
       console.log(item);
       productNames.push(item);
     }
-    //console.log('product names: ', productNames);
-
     return productNames;
   };
 
+  py_process.stdin.write(id.toString());
+  py_process.stdin.end();
   py_process.stdout.on('data', (data) => {
+    // console.log(JSON.parse(data));
     output = JSON.parse(data);
   });
 
@@ -273,10 +275,14 @@ const getKNNRecommendations = asyncHandler(async (req, res) => {
   const recommendations = await Product.find({ name: product_names }).sort({
     rating: -1,
   });
-  if (recommendations.length == 0 || recommendations == null) {
-    getKNNRecommendations();
-  } else {
-    res.json(recommendations);
+  try {
+    if (product_names.length == 0) {
+      await getKNNRecommendations();
+    } else {
+      res.json(recommendations);
+    }
+  } catch (error) {
+    res.json(error);
   }
 });
 

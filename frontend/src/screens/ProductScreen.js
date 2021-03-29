@@ -9,7 +9,6 @@ import {
   Card,
   Button,
   Form,
-  Container,
 } from 'react-bootstrap';
 
 import {
@@ -58,7 +57,7 @@ const ProductScreen = ({ history, match }) => {
 
   const itemsInLocal =
     JSON.parse(localStorage.getItem('productDataArray')) || [];
-  console.log("items in local" + itemsInLocal);
+  console.log('items in local' + itemsInLocal);
   //console.log("items in local spreaded" + [...itemsInLocal]);
 
   useEffect(() => {
@@ -70,7 +69,7 @@ const ProductScreen = ({ history, match }) => {
     if (!product._id || product._id !== match.params.id) {
       dispatch(listProductDetails(match.params.id));
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
-      dispatch(listProductsByRecommendations());
+      dispatch(listProductsByRecommendations(match.params.id));
     }
     //dispatch(listProductDetails(match.params.id));
   }, [dispatch, match, newReviewSuccess, product]);
@@ -91,6 +90,17 @@ const ProductScreen = ({ history, match }) => {
     }
   }
 
+  function recommendProducts() {
+    if (recommended === null) {
+      return false;
+    } else {
+      if (recommended.length <= 1) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
   const submitHandler = e => {
     e.preventDefault();
     dispatch(createProductReview(match.params.id, { rating, comment }));
@@ -196,25 +206,25 @@ const ProductScreen = ({ history, match }) => {
               </Card>
             </Col>
           </Row>
-          <div></div>
-          {recommendationLoading ? (
-            <Loader />
-          ) : recommendationError ? (
-            <Message variant="danger">{recommendationError}</Message>
-          ) : (
-            <>
-              <h2>We Recommend</h2>
-              <div className="row row-horizon">
-                <div className="d-flex flex-row flex-nowrap overflow-auto">
-                  {recommended.map(product => (
-                    <div className="content">
-                      <Product product={product} />
-                    </div>
-                  ))}
+          {recommendProducts() &&
+            (recommendationLoading ? (
+              <Loader />
+            ) : recommendationError ? (
+              <Message variant="danger">{recommendationError}</Message>
+            ) : (
+              <>
+                <h2>People also looked for</h2>
+                <div className="row row-horizon">
+                  <div className="d-flex flex-row flex-nowrap overflow-auto">
+                    {recommended.map(product => (
+                      <div className="content">
+                        <Product product={product} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </>
-          )}
+              </>
+            ))}
 
           {browsingHistory() && (
             <>

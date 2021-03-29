@@ -121,11 +121,11 @@ export const listProductsByBrand = (brand = '') => async dispatch => {
   }
 };
 
-export const listProductsByRecommendations = () => async dispatch => {
+export const listProductsByRecommendations = (id) => async dispatch => {
   try {
     dispatch({ type: PRODUCT_LIST_RECOMMENDATIONS_REQUEST });
 
-    const { data } = await axios.get(`/api/products/recommendations`);
+    const { data } = await axios.get(`/api/products/recommendations/${id}`);
     dispatch({
       type: PRODUCT_LIST_RECOMMENDATIONS_SUCCESS,
       payload: data,

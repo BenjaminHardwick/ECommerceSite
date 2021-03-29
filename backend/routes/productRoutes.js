@@ -34,7 +34,7 @@ router.get('/brands', getProductBrands);
 router.get('/categories', getProductCategories);
 router.route('/:id/reviews').post(protect, newReview);
 router.get('/best', getBestProducts);
-router.get('/recommendations', getKNNRecommendations);
+router.get('/recommendations/:id', getKNNRecommendations);
 
 // @desc Fetch specific product
 // @route GET /api/products/:id

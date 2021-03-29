@@ -24,10 +24,16 @@ mongoDBConnection = os.getenv('MONGO_URI')
 
 client = pymongo.MongoClient(mongoDBConnection)
 db = client['ecommerceDB']
+def column_index(df, query_cols):
+    cols = df.columns.values
+    sidx = np.argsort(cols)
+    return sidx[np.searchsorted(cols, query_cols, sorter=sidx)]
+    
+def KNN(ratings, data_products, chosen_product):
+    #searchFor = "Sony Playstation 4 Pro White Version"
+    ##print("chosen product: ")
+   ## print(chosen_product)
 
-def KNN(ratings, data_products):
-    #print(data_products)
-    #print(ratings)
     data_rating = ratings
     data_products = data_products
 
@@ -35,13 +41,16 @@ def KNN(ratings, data_products):
     rating = data_rating.loc[:, {"_id", "rating", "user"}]
     
     data = pd.merge(product, rating)
-    data = data.iloc[:8,:]
+    data = data.iloc[:10,:]
     #print(data)
     userProductTable = data.pivot_table(index=["name"], columns="user", values='rating').fillna(0)
-    userProductTable.head(8)
+    userProductTable.head(10)
+    #print(userProductTable.head(10))
 
-    queryIndex = np.random.choice(userProductTable.shape[0])
-    #print("chosen product is: ", userProductTable.index[queryIndex])
+    queryIndex = column_index(userProductTable, ObjectId(chosen_product))
+    
+
+   # print("query index: ", queryIndex)
 
     userProductTableMatrix = csr_matrix(userProductTable.values)
     model_knn = NearestNeighbors(metric='cosine', algorithm='brute')
@@ -61,16 +70,69 @@ def KNN(ratings, data_products):
     recommend = pd.concat([m, d], axis=1)
     #print(recommend)
     recommend = recommend.sort_values('distance',ascending=False)
-   # print(m)
-    #print(d)
 
-    #print('Recommendations for {0}:\n'.format(userProductTable.index[queryIndex]))
+   # print('Recommendations for {0}:\n'.format(userProductTable.index[queryIndex]))
 
     #for i in range(0, recommend.shape[0]):
-        #print('{0}:{1}, with distance of {2}'.format(i, recommend['product'].iloc[i], recommend['distance'].iloc[i]))
+        #print('{0}:{1}, with distance of {2}'.format(i, recommend['name'].iloc[i], recommend['distance'].iloc[i]))
     result = recommend.to_json(orient="records")
     parsed = json.loads(result)
     return json.dumps(parsed, indent=4)
+
+
+
+def getSelectedDetails(collection, productId):
+    selected_product = collection.find({"_id": productId}, {"_id": True, "name": True})
+    selected_product_ratings = collection.find({"_id": productId}, {"_id": True, 'reviews': {'rating': True, 'user': True}})
+    return selected_product, selected_product_ratings
+
+
+# def structureRecommended(product_in):
+# # 60575bdaa9dd4e15ec654b24
+#     collection = db['products']
+#     productId = ObjectId(product_in)
+#     # get data
+#     selected_product, selected_product_ratings = getSelectedDetails(collection, productId)
+
+
+#     # store data into DataFrames
+#     data_products = pd.DataFrame(list(selected_product))
+#     data_ratings = pd.DataFrame(list(selected_product_ratings))
+
+#     # structure as readible data
+#     restructuredData = []
+#     for item in data_ratings['reviews']:
+#         for i in item:
+#             restructuredData.append({'rating': i['rating'], 'user': i['user']})
+
+#     data_restructured = pd.DataFrame(list(restructuredData))
+#     del data_ratings['reviews']
+
+#    # print("data_restructured")
+#     #print(data_restructured)
+    
+
+
+
+#     ## allocating data sets titles and columns in the dataframe therefore readible for the algo
+#     dataframes = [data_ratings, data_restructured]
+#     ratings = data_ratings.join(data_restructured).fillna(0)
+
+#     #print(ratings)
+
+#     # turn into format for KNN
+#     product = data_products.loc[:, {"_id", "name"}]
+#     #print(product)
+#     #print(ratings)
+#     rating = ratings.reindex(columns=["_id", "rating", "user"]).fillna(0)
+#     #rating = ratings.loc[:, {"_id", "rating", "user"}].fillna(0)
+
+#     #print(rating)
+    
+#     data = pd.merge(product, rating)
+#     #print(data)
+#     chosen_product = data.pivot_table(index=["name"], columns="user", values='rating').fillna(0)
+#     return chosen_product
 
 
 
@@ -98,7 +160,6 @@ def getData():
 
     restructuredData = []
     for item in data_ratings['reviews']:
-
         for i in item:
             restructuredData.append({'rating': i['rating'], 'user': i['user']})
 
@@ -112,24 +173,30 @@ def getData():
     ratings = data_ratings.join(data_restructured).fillna(0)
     return(ratings, data_products)
 
-
+def readInput():
+    lines = sys.stdin.readlines()
+    return str(lines[0])
 
 def main():
+    # TODO: select row in pandas based on the name that we get from the getQueriedProduct, then make it the selected product, then K-NN can be completed.
+
     # get the data we want
     ratings, data_products = getData()
 
-    
-#product_in = sys.stdin.readlines()
-#   print(product_in)
+   # product_in = '60575bdaa9dd4e15ec654b28'
+     
+    # with reviews 60575bdaa9dd4e15ec654b23'
+    # alexa 60575bdaa9dd4e15ec654b28
 
-    # comuter sum
-    results = KNN(ratings, data_products)
+    product_in = readInput()
+
+    # compute sum
+    results = KNN(ratings, data_products, product_in)
 
     # return sum
 
     print(results)
-    #'sys.stdout.write(results)
-    #sys.stdout.flush()
+
     
 
 
