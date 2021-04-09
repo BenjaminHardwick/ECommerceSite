@@ -251,38 +251,38 @@ const getKNNRecommendations = asyncHandler(async (req, res) => {
   var py_process = spawn('python', [
     'C:/Users/benhe/OneDrive/Documents/University/Final Year Project/E-Commerce Site/backend/controllers/db.py',
   ]);
-
-  var addToProducts = function (output) {
-    var productNames = [];
-    var item = '';
-    for (var name in output) {
-      item = output[name].name;
-      console.log(item);
-      productNames.push(item);
-    }
-    return productNames;
-  };
-
-  py_process.stdin.write(id.toString());
-  py_process.stdin.end();
-  py_process.stdout.on('data', (data) => {
-    // console.log(JSON.parse(data));
-    output = JSON.parse(data);
-  });
-
-  var product_names = addToProducts(output);
-
-  const recommendations = await Product.find({ name: product_names }).sort({
-    rating: -1,
-  });
   try {
+    var addToProducts = function (output) {
+      var productNames = [];
+      var item = '';
+      for (var name in output) {
+        item = output[name].name;
+        console.log(item);
+        productNames.push(item);
+      }
+      return productNames;
+    };
+    py_process.on('error', function (err) {
+      console.log('Python Error: ', err);
+    });
+    py_process.stdin.write(id.toString());
+    py_process.stdin.end();
+    py_process.stdout.on('data', (data) => {
+      // console.log(JSON.parse(data));
+      output = JSON.parse(data);
+    });
+
+    var product_names = addToProducts(output);
+
+    const recommendations = await Product.find({ name: product_names });
+
     if (product_names.length == 0) {
       await getKNNRecommendations();
     } else {
       res.json(recommendations);
     }
-  } catch (error) {
-    res.json(error);
+  } catch (err) {
+    console.log('exception: ', err);
   }
 });
 

@@ -96,12 +96,9 @@ const CartScreen = ({ match, location, history }) => {
           <ListGroup variant="flush">
             <ListGroup.Item>
               <h2>
-                Subtotal: (
-                {cartItems.reduce(
-                  (accumulator, currItem) => accumulator + currItem.quantity,
-                  0
-                )}
-                ) items
+                Subtotal: {' '}
+                {cartItems.reduce((accumulator, currItem) => accumulator + parseInt(currItem.quantity),0)}
+                {' '}items
               </h2>
               £
               {cartItems

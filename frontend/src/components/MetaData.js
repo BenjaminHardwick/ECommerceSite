@@ -11,7 +11,7 @@ const MetaData = (title, description, keywords) => {
 };
 
 MetaData.defaultProps = {
-  title: 'FYD',
+  title: 'Hardwicks',
   description: 'Business to consumer.',
   keywords: 'gadgets, electronics, toys',
 };

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import {addToCart} from '../actions/cartActions';
 import {
   Row,
   Col,
@@ -69,27 +70,29 @@ const ProductScreen = ({ history, match }) => {
     if (!product._id || product._id !== match.params.id) {
       dispatch(listProductDetails(match.params.id));
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
-      
+
       dispatch(listProductsByRecommendations(match.params.id));
     }
     //dispatch(listProductDetails(match.params.id));
   }, [dispatch, match, newReviewSuccess, product]);
 
   const addToCartHandler = () => {
-    history.push(`/cart/${match.params.id}?qty=${quantity}`);
+    //history.push(`/cart/${match.params.id}?qty=${quantity}`);
+    dispatch(addToCart(product._id, quantity));
+    history.push('/cart');
   };
 
-  function browsingHistory() {
+  const browsingHistory = useCallback(() => {
     if (itemsInLocal === null) {
       return false;
     } else {
-      if (itemsInLocal.length <= 1) {
+      if (itemsInLocal.length <= 2) {
         return false;
       } else {
         return true;
       }
     }
-  }
+  }, [itemsInLocal]);
 
   function recommendProducts() {
     if (recommended === null) {
@@ -132,7 +135,7 @@ const ProductScreen = ({ history, match }) => {
           />
           <Row>
             <Col md={6}>
-              <Image src={product.image} alt={product.name} fluid></Image>
+              <Image src={product.image} alt={product.name} fluid style={{maxHeight:'40vh'}}></Image>
             </Col>
             <Col md={3}>
               <ListGroup variant="flush">
@@ -207,25 +210,26 @@ const ProductScreen = ({ history, match }) => {
               </Card>
             </Col>
           </Row>
-          {!recommendProducts() ? (<></>) : (
-            recommendationLoading ? (
-              <Loader />
-            ) : recommendationError ? (
-              <Message variant="danger">{recommendationError}</Message>
-            ) : (
-              <>
-                <h2>People also looked for</h2>
-                <div className="row row-horizon">
-                  <div className="d-flex flex-row flex-nowrap overflow-auto">
-                    {recommended.map(product => (
-                      <div className="content">
-                        <Product key={product.name} product={product} />
-                      </div>
-                    ))}
-                  </div>
+          {!recommendProducts() ? (
+            <></>
+          ) : recommendationLoading ? (
+            <Loader />
+          ) : recommendationError ? (
+            <Message variant="danger">{recommendationError}</Message>
+          ) : (
+            <>
+              <h2>People also looked for</h2>
+              <div className="row row-horizon">
+                <div className="d-flex flex-row flex-nowrap overflow-auto">
+                  {recommended.map(product => (
+                    <div className="content">
+                      <Product key={product.name} product={product} />
+                    </div>
+                  ))}
                 </div>
-              </>
-            ))}
+              </div>
+            </>
+          )}
 
           {browsingHistory() && (
             <>

@@ -1,12 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  Button,
-  Col,
-  Row,
-  ListGroup,
-  Image,
-
-} from 'react-bootstrap';
+import { Button, Col, Row, ListGroup, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
@@ -25,7 +18,8 @@ const FinalizeOrderScreen = ({ history }) => {
   // Calulating the price for delivery.
 
   // If the final fee of the product is greater than 999 then the delivery fee will be discarded in the final price.
-  cart.deliveryFee = cart.productPrice > 999 ? 0 : cart.productPrice / 100;
+  cart.deliveryFee =
+    cart.productPrice > 999 ? 0 : (cart.productPrice / 100).toFixed(2);
 
   cart.priceWithTax = Number((0.2 * cart.productPrice).toFixed(2));
   cart.priceWithTax = Math.round((cart.priceWithTax * 100) / 100).toFixed(2);
@@ -44,7 +38,6 @@ const FinalizeOrderScreen = ({ history }) => {
       //console.log('Success');
       history.push(`/order/${order._id}`);
     }
-    
   }, [order, history, success]);
 
   // On activation of placeOrderHandler, it will call OrderActions with order in the state passing all the information in createOrder
@@ -89,7 +82,7 @@ const FinalizeOrderScreen = ({ history }) => {
               ) : (
                 <ListGroup variant="flush">
                   {cart.cartItems.map((product, index) => (
-                    <ListGroup.Item  key={index}>
+                    <ListGroup.Item key={index}>
                       <Row>
                         <Col md={1}>
                           {' '}
@@ -141,7 +134,7 @@ const FinalizeOrderScreen = ({ history }) => {
                 {' '}
                 <Row>
                   <Col>Delivery Fee:</Col>
-                  <Col>£{cart.deliveryFee.toPrecision(2)}</Col>
+                  <Col>£{cart.deliveryFee}</Col>
                 </Row>
               </ListGroup.Item>
             )}

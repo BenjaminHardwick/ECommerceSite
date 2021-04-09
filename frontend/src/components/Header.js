@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
+import { Navbar, Nav, Container, NavDropdown, Image } from 'react-bootstrap';
 // to call an action use dispatch, bring something in, the use selector.
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../actions/userActions';
@@ -21,7 +21,12 @@ const Header = () => {
       <Navbar bg="dark" variant="dark" expand="xl" collapseOnSelect>
         <Container>
           <LinkContainer to="/">
-            <Navbar.Brand href="/">HARDWICKS</Navbar.Brand>
+            <Navbar.Brand href="/">
+              <Image
+                src="/HARDWICKSLOGOWHITE.png"
+                style={{ height: '65px', width: '145px' }}
+              ></Image>
+            </Navbar.Brand>
           </LinkContainer>
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />

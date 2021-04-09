@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dropdown, Form, Button } from 'react-bootstrap';
+import {  Form, Button } from 'react-bootstrap';
 
 const SearchBar = ({ history }) => {
   const [queries, setQuery] = useState('');

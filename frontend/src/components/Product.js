@@ -54,20 +54,22 @@ const Product = ({ product }) => {
         </Link>
 
         <Card.Body>
-          <Link to={`/product/${product._id}`} >
+          <Link to={`/product/${product._id}`}>
             <Card.Title as="div" onClick={storeInLocal}>
               <strong>{product.name}</strong>
             </Card.Title>
           </Link>
-        </Card.Body>
 
-        <Card.Text as="div">
-          <Rating
-            value={product.rating}
-            text={`${product.numReviews} reviews`}
-          />
-        </Card.Text>
-        <Card.Text as="h3">£{product.price}</Card.Text>
+          <Card.Text as="div">
+            <Card.Text as="h4">£{product.price}</Card.Text>
+          </Card.Text>
+          <Card.Text as="div">
+            <Rating
+              value={product.rating}
+              text={`${product.numReviews} reviews`}
+            />
+          </Card.Text>
+        </Card.Body>
       </Card>
     </div>
   );

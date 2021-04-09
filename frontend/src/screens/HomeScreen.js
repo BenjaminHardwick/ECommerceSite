@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
@@ -34,20 +34,7 @@ const HomeScreen = ({ match }) => {
     var max = itemsInLocal.length;
     return Math.floor(Math.random() * (max - 1 - 1 + 1) + 1);
   }
-  const categories = requestCategoryRecommendation();
-  function requestCategoryRecommendation() {
-    var productOfChoice = getRandomInt();
-    if (browsingHistory() == true) {
-      // console.log('random int chosen= ', productOfChoice);
-      //console.log(JSON.parse(itemsInLocal[productOfChoice]))
-      let recommended = JSON.parse(itemsInLocal[productOfChoice]);
-      var category = recommended.category;
-      return category;
-    } else {
-    }
-  }
-
-  function browsingHistory() {
+  const browsingHistory = useCallback(() => {
     if (itemsInLocal === null) {
       return false;
     } else {
@@ -57,7 +44,21 @@ const HomeScreen = ({ match }) => {
         return true;
       }
     }
+  }, [itemsInLocal]);
+
+  const categories = requestCategoryRecommendation();
+  function requestCategoryRecommendation() {
+    var productOfChoice = getRandomInt();
+    if (browsingHistory() === true) {
+      // console.log('random int chosen= ', productOfChoice);
+      //console.log(JSON.parse(itemsInLocal[productOfChoice]))
+      let recommended = JSON.parse(itemsInLocal[productOfChoice]);
+      var category = recommended.category;
+      return category;
+    } else {
+    }
   }
+
   useEffect(() => {
     dispatch(listProducts(keyword, pageNumber));
     if (browsingHistory()) {
@@ -76,7 +77,7 @@ const HomeScreen = ({ match }) => {
         </Link>
       )}
 
-      <h1>Lastest Products</h1>
+      <h1>Latest Products</h1>
       {loading ? (
         <Loader />
       ) : error ? (
@@ -85,14 +86,7 @@ const HomeScreen = ({ match }) => {
         <>
           <Row>
             {products.map(product => (
-              <Col
-                className="align-items-stretch d-flex"
-                key={product._id}
-                sm={12}
-                md={6}
-                lg={4}
-                xl={3}
-              >
+              <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
                 <Product product={product} />
               </Col>
             ))}
@@ -129,7 +123,7 @@ const HomeScreen = ({ match }) => {
           <div className="row row-horizon">
             <div className="d-flex flex-row flex-nowrap overflow-auto">
               {itemsInLocal.map(product => (
-                <div className="content">
+                <div className="content" key={product._id}>
                   <Product product={JSON.parse(product)} />
                 </div>
               ))}

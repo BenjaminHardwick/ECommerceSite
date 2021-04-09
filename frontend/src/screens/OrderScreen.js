@@ -18,18 +18,12 @@ import {
 
 const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id;
-
   const [sdkReady, setSdkReady] = useState(false);
-
   const dispatch = useDispatch();
-
   const userLogin = useSelector(state => state.userLogin);
   const { userInfo } = userLogin;
-
   const orderInformation = useSelector(state => state.orderInformation);
-
   const { order, loading, error } = orderInformation;
-
   const orderPayment = useSelector(state => state.orderPayment);
   // rename loading/success -> paymentLoading/paymentSucess
   const { success: paymentSuccess, loading: paymentLoading } = orderPayment;
@@ -39,17 +33,17 @@ const OrderScreen = ({ match, history }) => {
   const { success: deliverySuccess, loading: deliveryLoading } = orderDelivery;
 
   if (!loading) {
-    const add = num => {
-      return Math.round(num * 100) / 100;
+    const addDecimals = num => {
+      return (Math.round(num * 100) / 100).toFixed(2);
     };
 
-    order.productPrice = add(
+    order.productPrice = addDecimals(
       order.orderedProducts.reduce(
         (i, product) => i + product.price * product.quantity,
         0
       )
     );
-    order.deliveryFee = order.productPrice > 999 ? 0 : order.productPrice / 100;
+    order.deliveryFee = order.productPrice > 999 ? 0 : (order.productPrice / 100).toFixed(2)
 
     order.priceWithTax = Number((0.2 * order.productPrice).toFixed(2));
     order.priceWithTax = Math.round((order.priceWithTax * 100) / 100).toFixed(
@@ -101,6 +95,7 @@ const OrderScreen = ({ match, history }) => {
     deliverySuccess,
     userInfo,
     orderId,
+    history,
   ]);
 
   const deliveryHandler = () => {
@@ -108,10 +103,7 @@ const OrderScreen = ({ match, history }) => {
   };
 
   const paymentHandler = paymentResult => {
-    //console.log(paymentResult);
-    // Updates database /api/order/:id -> isPaid? to true
     dispatch(makePayment(orderId, paymentResult));
-    // console.log('made payment');
   };
 
   // On activation of placeOrderHandler, it will call OrderActions with order in the state passing all the information in createOrder
@@ -147,10 +139,11 @@ const OrderScreen = ({ match, history }) => {
                   <Message variant="success">
                     Delivered on {order.deliveredAt.substring(0, 10)}
                   </Message>
-                    ) : order.isPaid ? (
-                      
+                ) : order.isPaid ? (
                   <Message variant="danger">Currently being delivered</Message>
-                ): (<Message variant=""></Message>)}
+                ) : (
+                  <Message variant=""></Message>
+                )}
               </p>
             </ListGroup.Item>
 
@@ -226,7 +219,7 @@ const OrderScreen = ({ match, history }) => {
                 {' '}
                 <Row>
                   <Col>Delivery Fee:</Col>
-                  <Col>£{order.deliveryFee.toPrecision(2)}</Col>
+                  <Col>£{order.deliveryFee}</Col>
                 </Row>
               </ListGroup.Item>
             )}
@@ -258,6 +251,7 @@ const OrderScreen = ({ match, history }) => {
                 )}
               </ListGroup.Item>
             )}
+            {deliveryLoading && <Loader />}
             {userInfo &&
               userInfo.isAdmin &&
               order.isPaid &&

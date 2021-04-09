@@ -44,10 +44,10 @@ def KNN(ratings, data_products, chosen_product):
     rating = data_rating.loc[:, {"_id", "rating", "user"}]
     
     data = pd.merge(product, rating)
-    data = data.iloc[:10,:]
+    data = data.iloc[:18,:]
     #print(data)
     userProductTable = data.pivot_table(index=["name"], columns="user", values='rating').fillna(0)
-    userProductTable.head(10)
+    userProductTable.head(18)
     #print(userProductTable.head(10))
     #print(data)
     
