@@ -55,7 +55,7 @@ const App = () => {
           <Route path="/register" component={RegistrationScreen} />
           <Route path="/profile" component={ProfileScreen} />
           <Route path="/product/:id" component={ProductScreen} />
-          <Route path="/cart/:id?" component={CartScreen} />
+          <Route path="/cart" component={CartScreen} />
           <Route path="/search/:keyword" component={HomeScreen} exact />
           <Route
             path="/category/:category"

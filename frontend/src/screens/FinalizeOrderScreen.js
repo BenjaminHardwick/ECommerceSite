@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Checkout from '../components/Checkout';
 import { createOrder } from '../actions/orderActions';
+import { USER_INFO_RESET } from '../constants/userConstants';
+import { ORDER_CREATE_RESET } from '../constants/orderConstants';
 
 const FinalizeOrderScreen = ({ history }) => {
   const dispatch = useDispatch();
@@ -35,10 +37,12 @@ const FinalizeOrderScreen = ({ history }) => {
 
   useEffect(() => {
     if (success) {
-      //console.log('Success');
-      history.push(`/order/${order._id}`);
+      history.push(`/order/${order._id}`)
+      dispatch({ type: USER_INFO_RESET })
+      dispatch({ type: ORDER_CREATE_RESET })
     }
-  }, [order, history, success]);
+    // eslint-disable-next-line
+  }, [history, success])
 
   // On activation of placeOrderHandler, it will call OrderActions with order in the state passing all the information in createOrder
 
