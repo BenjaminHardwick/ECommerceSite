@@ -15,8 +15,7 @@ const ProductByBrandScreen = ({ match }) => {
   const productByBrand = useSelector(state => state.productByBrand);
   const { loading, error, products } = productByBrand;
 
-  console.log(brand);
-  console.log(products);
+
   useEffect(() => {
     dispatch(listProductsByBrand(brand));
   }, [dispatch, brand, pageNumber]);

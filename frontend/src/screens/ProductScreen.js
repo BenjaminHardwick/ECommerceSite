@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {addToCart} from '../actions/cartActions';
+import { addToCart } from '../actions/cartActions';
 import {
   Row,
   Col,
@@ -44,7 +44,6 @@ const ProductScreen = ({ history, match }) => {
     error: recommendationError,
     recommended,
   } = productKNNRecommended;
-  console.log(recommended);
 
   const productNewReview = useSelector(state => state.productNewReview);
   const {
@@ -58,8 +57,6 @@ const ProductScreen = ({ history, match }) => {
 
   const itemsInLocal =
     JSON.parse(localStorage.getItem('productDataArray')) || [];
-  //console.log('items in local' + itemsInLocal);
-  //console.log("items in local spreaded" + [...itemsInLocal]);
 
   useEffect(() => {
     if (newReviewSuccess) {
@@ -108,7 +105,6 @@ const ProductScreen = ({ history, match }) => {
   const submitHandler = e => {
     e.preventDefault();
     dispatch(createProductReview(match.params.id, { rating, comment }));
-    console.log(rating);
   };
   return (
     <>
@@ -135,7 +131,12 @@ const ProductScreen = ({ history, match }) => {
           />
           <Row>
             <Col md={6}>
-              <Image src={product.image} alt={product.name} fluid style={{maxHeight:'40vh'}}></Image>
+              <Image
+                src={product.image}
+                alt={product.name}
+                fluid
+                style={{ maxHeight: '40vh' }}
+              ></Image>
             </Col>
             <Col md={3}>
               <ListGroup variant="flush">

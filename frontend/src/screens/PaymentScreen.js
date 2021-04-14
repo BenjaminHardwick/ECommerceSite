@@ -22,7 +22,7 @@ const PaymentScreen = ({ history }) => {
 
   const submitHandler = e => {
     e.preventDefault();
-    console.log('submit');
+
     dispatch(paymentMethodHandler(paymentMethod));
     history.push('/checkout');
   };
@@ -35,7 +35,8 @@ const PaymentScreen = ({ history }) => {
         <Form.Group>
           <Form.Label as="legend">Choose preferred payment method</Form.Label>
         </Form.Group>
-        <Col>{/* TODO: ADD OTHER PAYMENT METHODS HOWEVER PAYPAL CAN HANDLE ALL TYPES OF CARDS W/O AN ACCOUNT
+        <Col>
+          {/* TODO: ADD OTHER PAYMENT METHODS HOWEVER PAYPAL CAN HANDLE ALL TYPES OF CARDS W/O AN ACCOUNT
           <Form.Check
             type="radio"
             label="Visa"
@@ -66,7 +67,7 @@ const PaymentScreen = ({ history }) => {
         </Col>
 
         <Button type="submit" variant="primary">
-         Choose Method
+          Choose Method
         </Button>
       </Form>
     </FormContainer>

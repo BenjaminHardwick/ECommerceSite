@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { Container } from 'react-bootstrap';
+import { Container, Toast, Button } from 'react-bootstrap';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomeScreen from './screens/HomeScreen';
@@ -24,11 +24,13 @@ import ProductByCategoryScreen from './screens/ProductByCategoryScreen';
 import ProductByBrandScreen from './screens/ProductByBrandSceen';
 import AboutScreen from './screens/AboutScreen';
 import CookieScreen from './screens/CookieScreen';
+import Cookie from './components/Cookie';
 
 const App = () => {
   return (
     <Router>
       <Header />
+      <Cookie />
       <main className="py-3">
         <Container>
           <Route path="/login" component={LoginScreen} />
