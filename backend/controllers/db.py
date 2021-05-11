@@ -16,7 +16,7 @@ import pandas as pd  # for processing data CSV file (e.g. pd.read_csv)
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
 
-env_path = Path('.') / '.env'
+env_path = Path('...') / '.env'
 load_dotenv(dotenv_path=env_path)
 
 mongoDBConnection = os.getenv('MONGO_URI')

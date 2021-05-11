@@ -248,8 +248,8 @@ const getKNNRecommendations = asyncHandler(async (req, res) => {
   //console.log(id);
   var spawn = child_process.spawn;
 
-  var py_process = spawn('python', [
-    'C:/Users/benhe/OneDrive/Documents/University/Final Year Project/E-Commerce Site/backend/controllers/db.py',
+  var py_process = spawn('python3', [
+    'db.py',
   ]);
   try {
     var addToProducts = function (output) {
