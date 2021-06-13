@@ -1,7 +1,7 @@
 # [HARDWICKS](https://ecommerce.benjaminhardwick.co.uk/) 🛍 E-Commerce Platform
 # ![HARDWICKS](https://ecommerce.benjaminhardwick.co.uk/HARDWICKSLOGOWHITE.png)
 
-
+Site is down currently since I no longer need a portfolio piece.
 ## ⭐ Features: 
 > - Easily Integrated Payment Systems 💰
 > - K-NN recommendation system 🤖
